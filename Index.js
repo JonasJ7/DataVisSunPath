@@ -1,38 +1,38 @@
-var w = 1000;
+var w = 2000;
 var h = 1000;
 
 var svg = d3.select("svg")
-	.attr("width", w)
-	.attr("height", h)
+    .attr("width", w)
+    .attr("height", h)
 
-//Creating Path
+var skyData = [];
+d3.json("dataset.json").then(function (data) {
+    skyData = data;
+    drawLine();
+});
 
-var lineMaker = d3.line()
-    .curve(d3.curveCardinal);
 
- function drawLine(){
-  var xScale = d3.scaleLinear().domain([0, skyData.length]).range([0, w]);
-  var yScale = d3.scaleLinear().domain([0, 100]).range([h-50, 50]);
 
-  lineMaker
-    .x(function(d, i) {
-     return xScale(i);
+var lineMaker = d3.line().curve(d3.curveCardinal);
+
+var pathData = lineMaker(coords)
+
+function drawLine() {
+var xScale = d3.scaleLinear().domain([0, skyData.length]).range([0, w]);
+var yScale = d3.scaleLinear().domain([0, 100]).range([h, 0]);
+
+lineMaker
+    .x(function (d, i) {
+        return xScale(i);
     })
-    .y(function(d) {
-      return yScale(d.sky);
+    .y(function (d) {
+        return yScale(d.altitude);
     });
 
-
-  var lineData = lineMaker(skyData);
+    var lineData = lineMaker(skyData);
 
    svg
-     .append('path')
-    .attr('d', lineData)
-    .attr('stroke','white')
-}
-
-myPath = svg
     .append('path')
-    .attr('transform', 'translate(' + w / 2 + ',' + h / 2 + ')')
-    .attr('d', lineData)
-    .attr('stroke', 'white')
+   .attr('d', lineData)
+.attr('stroke','white')
+}
