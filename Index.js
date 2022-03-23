@@ -5,20 +5,18 @@ var svg = d3.select("svg")
     .attr("width", w)
     .attr("height", h)
 
-var skyData = [];
+var dataset = [];
 d3.json("dataset.json").then(function (data) {
-    skyData = data;
+    dataset = data;
     drawLine();
 });
-
-
 
 var lineMaker = d3.line().curve(d3.curveCardinal);
 
 var pathData = lineMaker(coords)
 
 function drawLine() {
-var xScale = d3.scaleLinear().domain([0, skyData.length]).range([0, w]);
+    var xScale = d3.scaleLinear().domain([0, dataset.length]).range([0, w]);
 var yScale = d3.scaleLinear().domain([0, 100]).range([h, 0]);
 
 lineMaker
@@ -29,7 +27,7 @@ lineMaker
         return yScale(d.altitude);
     });
 
-    var lineData = lineMaker(skyData);
+    var lineData = lineMaker(dataset);
 
    svg
     .append('path')
