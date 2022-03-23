@@ -32,5 +32,6 @@ lineMaker
    svg
     .append('path')
    .attr('d', lineData)
-.attr('stroke','white')
+       .attr('stroke', 'white')
+       .attr('fill', "none")
 }
