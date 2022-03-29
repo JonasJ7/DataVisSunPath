@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="stylesheet.css">
 </head>
 <body>
+    <input id="slide" type="range" min="0" max="360" oninput="updateSlider(this.value)" />
+    <div id="sliderAmount"></div>
     <h1 class="header">Paths around the sun</h1>
     <div id="canvas">
         <svg>
