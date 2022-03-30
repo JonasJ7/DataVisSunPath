@@ -1,14 +1,16 @@
-// var w = 2000;
-// var h = 1000;
-var r = 250,
+var r = 200,
     w = r * 3,
     h = w,
     rad = Math.PI / 180;
+var width = 2000;
+var height = 1200;
+var xPad = width / 1.5;
+var yPad = height / 4;
 
 var svg = d3.select("svg")
-    .attr("width", 2000)
-    .attr("height", 1000)
-    .style("background-color", "black")
+    .attr("width", width)
+    .attr("height", height)
+    //.style("background-color", "black")
 
 var dataset = [];
 d3.json("dataset.json").then(function (data) {
@@ -16,26 +18,18 @@ d3.json("dataset.json").then(function (data) {
     doAll();
 });
 
-var sA;
-
-function updateSlider(slideAmount) {
-    var sliderDiv = document.getElementById("sliderAmount");
-    sliderDiv.innerHTML = slideAmount;
-    sA = slideAmount;
-    updateRot();
-}
-
 var arrData = []
 var nested = []
 var dates = []
 var rotPos = []
 var g;
 
-var rotScale = d3.scaleLinear().domain([0, 12]).range([0, 360]);
-var objRot = d3.scaleLinear().domain([0, 12]).range([0, 360]);
+var rotScale = d3.scaleLinear()
+    .domain([0, 12])
+    .range([0, 360]);
 var lineMaker = d3.line().curve(d3.curveCardinal);
 var xScale = d3.scaleLinear().domain([0, 24]).range([50, w - 50]);
-var yScale = d3.scaleLinear().domain([1, 12]).range([h / 2, 50]);
+var yScale = d3.scaleLinear().domain([1, 12]).range([h / 5, 50]);
 
 
 
@@ -62,8 +56,9 @@ function doAll() {
             var month = parseInt(dates[i].slice(3, 5));
 
             rotPos.push({
-                "x": ((w / 2 - r) * Math.cos((rotScale(month)) * rad)),
-                "y": ((h / 2 - r) * Math.sin((rotScale(month)) * rad))
+                "x": ((w /2 - r) * Math.cos((rotScale(month)) * rad)),
+                "y": ((h / 2 - r) * Math.sin((rotScale(month)) * rad)),
+                "m": month
             })
         }
         draw();
@@ -84,16 +79,10 @@ function doAll() {
             .attr('class', function (d) {
                 return d[0];
             })
-           /* .attr('transform', function (d, i) {
-                return 'rotate(' + ((360 * 1 / 12 * i)) + ')'
-            })*/
             .attr('transform', function (d, i) {
-                console.log(d);
-                console.log(i);
-                // return 'translate(10, 10)rotate(10)'
-                return 'translate(' + (500 + rotPos[i].x) + ',' + (300 + rotPos[i].y) + ') rotate(' + ((360 * 1 / 12 * i) + sA) + ')'
-            })
-
+                //this determines the circular positioning of each element
+                return 'translate(' + (xPad / 2 + rotPos[i].x) + ',' + (yPad / 2 + rotPos[i].y) + ')'
+            });
         var pathShape = g.append('path')
             .attr('d', function (d, i) {
                 var lineData = (lineMaker(d[1]));
@@ -103,12 +92,8 @@ function doAll() {
                 return 'white'
             })
             .attr('fill', "none")
+            .attr('transform', function (d, i) {
+                return 'rotate(' + rotScale(rotPos[i].m) + ',' + w / 2 + ',' + h / 2 + ')'
+            })
     }
-}
-
-function updateRot() {
-    g = svg.selectAll('g')
-        .attr('transform', function (d, i) {
-            return 'translate(' + (500 + rotPos[i].x) + ',' + (300 + rotPos[i].y) + ') rotate(' + ((360 * 1 / 12 * i) + sA) + ')'
-        })
 }
